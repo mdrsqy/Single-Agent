@@ -6,41 +6,36 @@ from qlearning import q_learning
 import sys
 import io
 
-# Memastikan stdout mendukung utf-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', line_buffering=True)
 
-# Membuat folder 'result' jika belum ada
 if not os.path.exists('result'):
     os.makedirs('result')
 
-# Map konfigurasi 4x4
 map_config = {
-    "width": 4,  # Lebar grid
-    "height": 4,  # Tinggi grid
-    "start": (0, 0),  # Posisi start
-    "goal": (3, 3),  # Posisi goal
-    "obstacles": [(1, 1), (1, 2), (2, 1)]  # Posisi obstacles
+    "width": 4,
+    "height": 4,
+    "start": (0, 0),
+    "goal": (3, 3),
+    "obstacles": [(1, 1), (2, 2)]
 }
 
-# Hyperparameter untuk RL
 episodes = 1000
 alpha = 0.1
 gamma = 0.99
 epsilon = 0.1
 
-# Fungsi untuk menampilkan peta arah hasil policy
 def plot_direction_map(Q, env):
     direction_map = np.full((env.height, env.width), ' ', dtype='<U2')
 
     for x in range(env.height):
         for y in range(env.width):
             if (x, y) == env.goal:
-                direction_map[x, y] = 'G'  # Tanda Goal
+                direction_map[x, y] = '⛳'
             elif (x, y) in env.obstacles:
-                direction_map[x, y] = 'X'  # Tanda Obstacle
+                direction_map[x, y] = '💣'
             else:
                 best_action = np.argmax(Q[x, y])
-                direction_map[x, y] = ['↑', '↓', '←', '→'][best_action]  # Arah yang terbaik
+                direction_map[x, y] = ['⬆️', '⬇️', '⬅️', '➡️'][best_action]
 
     for row in direction_map:
         print(" ".join(row))
